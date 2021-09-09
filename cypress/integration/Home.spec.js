@@ -5,6 +5,7 @@
 describe('Home page', () => {
   before(() => {
     cy.visit('http://localhost:3000/');
+    cy.clearLocalStorage();
   });
 
   it('Shows right header text', function () {
@@ -41,5 +42,36 @@ describe('Home page', () => {
       .should('be.visible')
       .and('have.attr', 'src')
       .should('include', 'heart-stroke');
+  });
+
+  it('Favorites are saved in local storage', function () {
+    cy.get('[data-testid=property2] button')
+      .click({ force: true })
+      .should(() => {
+        expect(
+          (JSON.parse(localStorage.getItem('FAVORITES')) || []).length,
+        ).equal(1);
+      });
+    cy.get('[data-testid=property3] button')
+      .click({ force: true })
+      .should(() => {
+        expect(
+          (JSON.parse(localStorage.getItem('FAVORITES')) || []).length,
+        ).equal(2);
+      });
+    cy.get('[data-testid=property4] button')
+      .click({ force: true })
+      .should(() => {
+        expect(
+          (JSON.parse(localStorage.getItem('FAVORITES')) || []).length,
+        ).equal(3);
+      });
+    cy.get('[data-testid=property3] button')
+      .click({ force: true })
+      .should(() => {
+        expect(
+          (JSON.parse(localStorage.getItem('FAVORITES')) || []).length,
+        ).equal(2);
+      });
   });
 });
